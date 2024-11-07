@@ -1,0 +1,14 @@
+{
+    "manifest_version": 1,
+    "name": "Mini Web Browser",
+    "version": "1.0.0",
+    "permission": [],
+    "background": {
+        "service_worker": "background.js"
+    },
+    "content_scripts": [
+        {
+            
+        }
+    ]
+}
