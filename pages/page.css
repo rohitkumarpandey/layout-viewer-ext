@@ -1,0 +1,22 @@
+.mbe-page-container {
+    height: 100%;
+    width: 100%;
+}
+
+.mbe-page-container > .mbe-page-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 5%;
+}
+
+.mbe-page-container > .mbe-page-content {
+    height: 95%;
+}
+
+.mbe-page-container > .mbe-page-content > iframe {
+    height: 100%;
+    width: 100%;
+    border: none;
+    box-shadow: 2px 2px 5px lightslategray;
+}

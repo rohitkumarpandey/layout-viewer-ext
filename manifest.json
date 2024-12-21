@@ -1,14 +1,36 @@
 {
-    "manifest_version": 1,
-    "name": "Mini Web Browser",
+    "manifest_version": 3,
+    "name": "Layout Viewer",
     "version": "1.0.0",
-    "permission": [],
+    "permissions": [
+        "activeTab",
+        "tabs"
+    ],
     "background": {
         "service_worker": "background.js"
     },
     "content_scripts": [
         {
-            
+            "matches": [
+                "<all_urls>"
+            ],
+            "js": [
+                "content.js"
+            ],
+            "css": [
+                "styles.css"
+            ]
+        }
+    ],
+    "web_accessible_resources": [
+        {
+            "resources": [
+                "popup.html",
+                "pages/page.html"
+            ],
+            "matches": [
+                "<all_urls>"
+            ]
         }
     ]
 }
