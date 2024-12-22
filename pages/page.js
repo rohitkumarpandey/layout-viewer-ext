@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const pageIframe = document.getElementsByClassName('mbe-page-iframe');
+    const pageIframe = document.getElementsByClassName('lv-page-iframe');
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
         const activeTab = tabs[0];
         if (pageIframe) {

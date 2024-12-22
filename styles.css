@@ -1,30 +1,42 @@
-.mbe-container {
+:root {
+    --background: #f5f1fe;
+    --first-color: #222831;
+    --second-color: #393e46;
+    --third-color: #f96d00;
+    --forth-color: #f2f2f2;
+}
+.lv-container {
     height: 100%;
     width: 100%;
     padding: 0px 5px 0 5px;
     overflow: none;
-    background-color: white;
     border-radius: 5px 0 0 5px;
+    font-family: "Montserrat", serif;
+    font-optical-sizing: auto;
+    font-style: normal;
+    background-color: white;
+    font-weight: bold;
+    color: var(--first-color);
 }
 
-.mbe-container>.mbe-popup-header {
+.lv-container>.lv-popup-header {
     height: 5%;
     min-height: 5%;
     width: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
-    border-bottom: 2px solid lightslategray;
+    border-bottom: .5px solid var(--first-color);
     backdrop-filter: blur(5px);
 }
-.mbe-container>.mbe-popup-header > div {
+.lv-container>.lv-popup-header > div {
     flex-basis: 100%;
     height: 100%;
     align-items: center;
     display: flex;
 }
-.mbe-container>.mbe-popup-header > .mbe-popup-header-left > div,
-.mbe-container>.mbe-popup-header>.mbe-popup-header-right > div  {
+.lv-container>.lv-popup-header > .lv-popup-header-left > div,
+.lv-container>.lv-popup-header>.lv-popup-header-right > div  {
     height: 24px;
     width: 24px;
     cursor: pointer;
@@ -34,20 +46,20 @@
     border-radius: 8px;
     box-shadow: 1px 1px 5px gray;
 }
-.mbe-container>.mbe-popup-header > .mbe-popup-header-left > div:hover,
-.mbe-container>.mbe-popup-header>.mbe-popup-header-right > div:hover {
+.lv-container>.lv-popup-header > .lv-popup-header-left > div:hover,
+.lv-container>.lv-popup-header>.lv-popup-header-right > div:hover {
     background-color: whitesmoke;
     border-radius: 4px;
     box-shadow: 1px 2px 5px grey;
 }
-.mbe-container>.mbe-popup-header > .mbe-popup-header-middle {
+.lv-container>.lv-popup-header > .lv-popup-header-middle {
     display: flex;
     justify-content: center;
     align-items: center;
     letter-spacing: 2px;
     font-size: larger;
 }
-.mbe-container>.mbe-popup-header>.mbe-popup-header-right {
+.lv-container>.lv-popup-header>.lv-popup-header-right {
     display: flex;
     font-size: 24px;
     justify-content: space-around;
@@ -56,21 +68,21 @@
 }
 
 
-.mbe-container>.mbe-section-container {
+.lv-container>.lv-section-container {
     height: 90%;
     min-height: 90%;
     width: 100%;
     border-radius: 5px;
 }
 
-.mbe-sections {
+.lv-sections {
     width: 100%;
     display: flex;
-    background-color: white;
+    background-color: var(--background);
     height: 100%;
     overflow: auto;
 }
-.mbe-section {
+.lv-section {
     position: relative;
     display: flex;
     justify-content: center;
@@ -79,7 +91,7 @@
     min-width: fit-content;
     flex-direction: column;
 }
-.mbe-page-header {
+.lv-page-header {
     position: absolute;
     top: 0;
     left: 0;
@@ -91,46 +103,46 @@
     padding: 0 10px;
     justify-content: center;
 }
-.mbe-page-header > div {
+.lv-page-header > div {
     height: 100%;
     align-items: center;
     font-size: 14px;
     justify-content: center;
 }
-.mbe-page-header img {
+.lv-page-header img {
     height: 100%;
     scale: .5;
 }
-.mbe-page-header img:hover {
+.lv-page-header img:hover {
     scale: .52;
     cursor: pointer;
 }
-.mbe-page-header .mbe-page-resolution {
+.lv-page-header .lv-page-resolution {
     margin-left: 5px;
 }
-.mbe-page-header > div:nth-child(2) {
+.lv-page-header > div:nth-child(2) {
     display: flex;
     justify-content: space-evenly;
     padding: 0 10px;
 }
-.mbe-page-header > div:nth-child(3) {
+.lv-page-header > div:nth-child(3) {
     display: flex;
     align-items: center;
 }
-.mbe-page-header:hover {
+.lv-page-header:hover {
     opacity: .8;
 }
 
-.mbe-page-header .close-tab-btn:hover {
+.lv-page-header .close-tab-btn:hover {
     cursor: pointer;
     scale: 1.1;
 }
-.mbe-section-tab {
+.lv-section-tab {
     height: 100%;
     width: 100%;
 }
 
-.mbe-section>.mbe-section-tab > iframe {
+.lv-section>.lv-section-tab > iframe {
     height: 100%;
     border: none;
     width: 100%;
@@ -139,7 +151,7 @@
     margin: 0;
 }
 
-.mbe-container>.mbe-footer {
+.lv-container>.lv-footer {
     height: 5%;
     min-height: 5%;
     width: 100%;
@@ -148,19 +160,19 @@
     justify-content: center;
 }
 
-.mbe-container>.mbe-footer > div {
+.lv-container>.lv-footer > div {
     flex-basis: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
-.mbe-container>.mbe-footer > div img {
+.lv-container>.lv-footer > div img {
    height: 24px;
    margin: 5px;
 }
 
-.mbe-container>.mbe-footer > div:nth-child(3) img:hover {
+.lv-container>.lv-footer > div:nth-child(3) img:hover {
     cursor: pointer;
     scale: 1.1;
 }

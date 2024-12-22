@@ -4,7 +4,8 @@
     "version": "1.0.0",
     "permissions": [
         "activeTab",
-        "tabs"
+        "tabs",
+        "storage"
     ],
     "background": {
         "service_worker": "background.js"
@@ -15,7 +16,8 @@
                 "<all_urls>"
             ],
             "js": [
-                "content.js"
+                "content.js",
+                "storage.js"
             ],
             "css": [
                 "styles.css"

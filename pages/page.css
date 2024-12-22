@@ -1,20 +1,20 @@
-.mbe-page-container {
+.lv-page-container {
     height: 100%;
     width: 100%;
 }
 
-.mbe-page-container > .mbe-page-header {
+.lv-page-container > .lv-page-header {
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 5%;
 }
 
-.mbe-page-container > .mbe-page-content {
+.lv-page-container > .lv-page-content {
     height: 95%;
 }
 
-.mbe-page-container > .mbe-page-content > iframe {
+.lv-page-container > .lv-page-content > iframe {
     height: 100%;
     width: 100%;
     border: none;

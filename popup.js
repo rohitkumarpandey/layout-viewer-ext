@@ -22,24 +22,24 @@ class AppManager {
     }
 
     setDeviceOptions(sectionNum) {
-        const pageHeadersElem = document.getElementsByClassName('mbe-page-header');
+        const pageHeadersElem = document.getElementsByClassName('lv-page-header');
         const pageHeaderLeft = document.createElement('div');
-        pageHeaderLeft.className = 'mbe-page-header-left';
+        pageHeaderLeft.className = 'lv-page-header-left';
         // pageHeaderLeft.innerHTML = '&#128241;';
 
         const pageHeaderMiddle = document.createElement('div');
-        pageHeaderMiddle.className = 'mbe-page-header-middle';
+        pageHeaderMiddle.className = 'lv-page-header-middle';
 
         const pageHeaderRight = document.createElement('div');
-        pageHeaderRight.className = 'mbe-page-header-right';
+        pageHeaderRight.className = 'lv-page-header-right';
 
         const rotateIcon = document.createElement('img');
         rotateIcon.id = `rotate-device-${sectionNum}`;
         rotateIcon.src = './assets/rotate-device.png'
 
         const resolution = document.createElement('div');
-        resolution.id = `mbe-page-resolution-${sectionNum}`;
-        resolution.className = 'mbe-page-resolution'
+        resolution.id = `lv-page-resolution-${sectionNum}`;
+        resolution.className = 'lv-page-resolution'
         const defaultDevice = this.deviceOptions[0];
         resolution.innerText = `${defaultDevice.width} x ${defaultDevice.height}`;
 
@@ -49,14 +49,14 @@ class AppManager {
         closeTabBtn.setAttribute('data-app', `close-tab-btn-${sectionNum}`);
 
         const deviceOptionsDropdown = document.createElement('select');
-        deviceOptionsDropdown.className = 'mbe-device-dropdown';
+        deviceOptionsDropdown.className = 'lv-device-dropdown';
         deviceOptionsDropdown.setAttribute('data-app', `section-dropdown-${sectionNum}`);
         this.deviceOptions.forEach(device => {
             if (device.enabled) {
                 const optionElem = document.createElement('option');
                 optionElem.innerText = device.name;
                 optionElem.value = device.id;
-                optionElem.className = 'mbe-device-option';
+                optionElem.className = 'lv-device-option';
                 optionElem.setAttribute('data-app', `section-options-${sectionNum}`);
                 deviceOptionsDropdown.appendChild(optionElem);
             }
@@ -95,17 +95,17 @@ class AppManager {
     }
 
     setSection() {
-        const sectionsRef = document.getElementsByClassName('mbe-sections');
+        const sectionsRef = document.getElementsByClassName('lv-sections');
 
         const sectionElem = document.createElement('div');
         sectionElem.id = `section-${this.tabs}`;
-        sectionElem.className = 'mbe-section';
+        sectionElem.className = 'lv-section';
 
         const sectionHeaderElem = document.createElement('div');
-        sectionHeaderElem.className = 'mbe-page-header';
+        sectionHeaderElem.className = 'lv-page-header';
 
         const sectionContentElem = document.createElement('div');
-        sectionContentElem.className = 'mbe-section-tab';
+        sectionContentElem.className = 'lv-section-tab';
         sectionContentElem.setAttribute('data-app', `tab-${this.tabs}`);
 
         const sectionContentIframeElem = document.createElement('iframe');
@@ -140,7 +140,7 @@ class AppManager {
                 config = device.getLandScapeMode();
             }
             // update resolution text
-            const resolution = document.getElementById(`mbe-page-resolution-${sectionId}`);
+            const resolution = document.getElementById(`lv-page-resolution-${sectionId}`);
             resolution.innerText = `${config.width} x ${config.height}`;
             iframe.style.height = config.height;
             iframe.style.width = config.width;
