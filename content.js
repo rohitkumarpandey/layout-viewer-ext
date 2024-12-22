@@ -1,4 +1,24 @@
+class AppConfig {
+    constructor(fullscreen = false, pinned = true) {
+        this.fullscreen = fullscreen;
+        this.pinned = pinned;
+    }
+    getFullscreen() {
+        return this.fullscreen;
+    }
+    setFullscreen(fullscreen) {
+        this.fullscreen = fullscreen;
+    }
+    getPinned() {
+        return this.pinned;
+    }
+    setPinned(pinned) {
+        this.pinned = pinned;
+    }
+}
 (() => {
+    const appConfig = new AppConfig();
+
     const CONSTANT = {
         POPUP_ID: 'custom-popup',
         ACTION: {
@@ -15,7 +35,6 @@
     };
     const button = document.createElement("button");
     const closeBtn = document.createElement('div');
-    const pinBtn = document.createElement('div');
     const toggleBtn = document.createElement('div');
     const styleConfig = {
         button: {
@@ -60,11 +79,6 @@
             cursor: 'pointer',
             margin: '0 4px',
         },
-        popupPin: {
-            cursor: 'pointer',
-            margin: '-2px 4px 0 4px',
-            rotate: '150deg'
-        },
         toggleBtn: {
             cursor: 'pointer',
             color: 'black',
@@ -87,20 +101,13 @@
         document.body.appendChild(button);
     }
 
-    function pinPopupOption() {
-        pinBtn.innerHTML = '&#9740;'
-        pinBtn.id = "pin-popup-btn";
-        Object.assign(pinBtn.style, styleConfig.popupPin);
-        return pinBtn;
-    }
-
     function closePopup() {
         closeBtn.innerHTML = '&#x2716;'
         closeBtn.id = "close-popup-btn";
         Object.assign(closeBtn.style, styleConfig.popupClose);
         return closeBtn;
     }
-    function toggleFullScreen() {
+    function toggleFullScreenOption() {
         toggleBtn.innerHTML = '&#x26F6;'
         toggleBtn.id = "toggle-fullscreen-btn";
         Object.assign(toggleBtn.style, styleConfig.toggleBtn);
@@ -111,8 +118,7 @@
         options.id = 'popup-options';
         Object.assign(options.style, styleConfig.popupOptions);
         options.appendChild(closePopup());
-        //options.appendChild(pinPopupOption());
-        options.appendChild(toggleFullScreen());
+        options.appendChild(toggleFullScreenOption());
         return options;
     }
     function injectPopup() {
@@ -126,10 +132,40 @@
         popup.appendChild(iframe);
 
         document.body.appendChild(popup);
+        appConfig.setPinned(true);
+        saveState(appConfig);
     }
     function bindEvent(target, event, callback) {
         target.addEventListener(event, callback);
     }
+    function stretchToFullScreen() {
+        const popup = document.getElementById('custom-popup');
+        if (popup) {
+            popup.style.width = '100%';
+            popup.style.height = '100%';
+            popup.style.top = '0';
+        }
+    }
+    function shrinkToMedium() {
+        const popup = document.getElementById('custom-popup');
+        if (popup) {
+            popup.style.width = '60%'
+            popup.style.height = '92%';
+            popup.style.top = '2%';
+        }
+    }
+    function toggleFullScreen() {
+        const popup = document.getElementById('custom-popup');
+        if (popup && popup.style.width.includes('100')) {
+            shrinkToMedium();
+            appConfig.setFullscreen(false);
+        } else {
+            stretchToFullScreen();
+            appConfig.setFullscreen(true);
+        }
+        saveState(appConfig);
+    }
+
     function bindEvents() {
         bindEvent(button, 'click', () => {
             const popup = document.getElementById('custom-popup');
@@ -139,67 +175,54 @@
         });
 
         bindEvent(toggleBtn, 'click', () => {
-            const popup = document.getElementById('custom-popup');
-
-            if (popup && popup.style.width.includes('100')) {
-                popup.style.width = '60%'
-                popup.style.height = '92%';
-                popup.style.top = '2%';
-
-            } else {
-                popup.style.width = '100%';
-                popup.style.height = '100%';
-                popup.style.top = '0';
-            }
+            toggleFullScreen();
         });
 
         bindEvent(closeBtn, 'click', () => {
             const popup = document.getElementById('custom-popup');
-
             if (popup) {
                 popup.remove();
+                appConfig.setFullscreen(false);
+                appConfig.setPinned(false);
+                saveState(appConfig);
             }
         });
-
-        bindEvent(pinBtn, 'click', () => {
-            togglePinPopup();
-        });
-    }
-    function togglePinPopup() {
-        // check if popup is pinned
-        const isPinned = checkForPinPopUp();
-        sendMessageToBackground({ action: CONSTANT.ACTION.SESSION_STORAGE, perform: 'SET', data: { key: CONSTANT.SESSION_STORAGE.POPUP_PINNED, value: !isPinned } }, () => { });
-
-    }
-    function pinPopup() {
-        // check if popup is pinned
-        if (checkForPinPopUp()) {
-            injectPopup();
-        }
     }
 
     function sendMessageToBackground(message, callback) {
-        chrome.runtime.sendMessage(message, callback);
+        chrome.runtime.sendMessage(message, {}, callback);
     }
-    function checkForPinPopUp() {
-        let isPinned = false;
-        sendMessageToBackground({ action: CONSTANT.ACTION.SESSION_STORAGE, perform: 'GET', data: { key: CONSTANT.SESSION_STORAGE.POPUP_PINNED } }, (response) => {
-            console.log('Message sent', response);
-            isPinned = response && response[CONSTANT.SESSION_STORAGE.POPUP_PINNED];
+
+    function saveState(config) {
+        sendMessageToBackground({ action: CONSTANT.ACTION.SESSION_STORAGE, perform: 'SET', data: { 'appconfig': config } }, () => { });
+    }
+    async function getState() {
+        return await new Promise((resolve) => {
+            sendMessageToBackground({ action: CONSTANT.ACTION.SESSION_STORAGE, perform: 'GET', data: { key: 'appconfig' } }, (response) => {
+                resolve(response);
+            });
         });
-        return isPinned;
     }
     function handleReload() {
-        const popup = document.getElementById('custom-popup');
         const navigationEntries = performance.getEntriesByType('navigation');
         if (navigationEntries.length > 0 && navigationEntries[0].type === 'reload') {
-            if (!popup) {
-                injectPopup();
-            }
+            (async () => {
+                const config = (await getState())['appconfig'] || appConfig;
+                appConfig.setFullscreen(config.fullscreen);
+                appConfig.setPinned(config.pinned);
+
+                // open popup if pinned
+                if (appConfig.pinned) {
+                    injectPopup();
+                }
+                // open in fullscreen
+                if (appConfig.fullscreen) {
+                    stretchToFullScreen();
+                }
+            })();
         }
     }
     injectingFloatingButton();
     bindEvents();
     handleReload();
-
 })();

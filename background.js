@@ -6,13 +6,14 @@ chrome.runtime.onMessage.addListener((request, sender, callback) => {
 
     if (request.action === 'session_storage') {
         if (request.perform && request.perform == 'GET') {
-            get(request?.data?.key, (result) => {
-                callback({'popup_pinned': result });
+            get(request.data.key, (result) => {
+                callback(result);
             });
         } else if (request.perform && request.perform == 'SET') {
-            set(request?.data?.key, request?.data?.value, (result) => {
+            set(request.data, (result) => {
                 callback(result);
             });
         }
+        return true;
     }
 })
