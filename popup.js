@@ -35,7 +35,8 @@ class AppManager {
 
         const rotateIcon = document.createElement('img');
         rotateIcon.id = `rotate-device-${sectionNum}`;
-        rotateIcon.src = './assets/rotate-device.png'
+        rotateIcon.src = './assets/rotate-device.png';
+        rotateIcon.setAttribute('data-app', `rotate-device-${sectionNum}`);
 
         const resolution = document.createElement('div');
         resolution.id = `lv-page-resolution-${sectionNum}`;
@@ -50,6 +51,7 @@ class AppManager {
 
         const deviceOptionsDropdown = document.createElement('select');
         deviceOptionsDropdown.className = 'lv-device-dropdown';
+        deviceOptionsDropdown.id = `section-dropdown-${sectionNum}`;
         deviceOptionsDropdown.setAttribute('data-app', `section-dropdown-${sectionNum}`);
         this.deviceOptions.forEach(device => {
             if (device.enabled) {
@@ -72,11 +74,20 @@ class AppManager {
             pageHeaderElem.appendChild(pageHeaderRight);
         });
 
-        // rotateIcon.addEventListener('click', () => {
-        //     const data = ("" + rotateIcon.getAttribute('data-app'));
-        //     const sectionNum = data[data.length - 1];
-        //     this.changeDevice(deviceOptionsDropdown.value, sectionNum);
-        // });
+        rotateIcon.addEventListener('click', () => {
+            const data = ("" + rotateIcon.getAttribute('data-app'));
+            const sectionNum = data[data.length - 1];
+            const section = document.getElementById(`section-${sectionNum}`);
+            const sectionData = "" + section.getAttribute('data-app');
+            const orientation = sectionData.split('-')[2] || 'portrait';
+            const deviceOptionsDropdown = document.getElementById(`section-dropdown-${sectionNum}`);
+            const selectedDevice = deviceOptionsDropdown.value;
+            const device = this.deviceOptions.find(device => device.id === selectedDevice);
+            if (selectedDevice && device) {
+                const newOrientation = orientation === 'portrait' ? 'landscape' : 'portrait';
+                this.changeDevice(selectedDevice, sectionNum, newOrientation);
+            }
+        });
         deviceOptionsDropdown.addEventListener('change', () => {
             const data = ("" + deviceOptionsDropdown.getAttribute('data-app'));
             const sectionNum = data[data.length - 1];
@@ -100,6 +111,7 @@ class AppManager {
         const sectionElem = document.createElement('div');
         sectionElem.id = `section-${this.tabs}`;
         sectionElem.className = 'lv-section';
+        sectionElem.setAttribute('data-app', `section-${this.tabs}-portrait`);
 
         const sectionHeaderElem = document.createElement('div');
         sectionHeaderElem.className = 'lv-page-header';
@@ -144,6 +156,10 @@ class AppManager {
             resolution.innerText = `${config.width} x ${config.height}`;
             iframe.style.height = config.height;
             iframe.style.width = config.width;
+
+            // update the orientation
+            const section = document.getElementById(`section-${sectionId}`);
+            section.setAttribute('data-app', `section-${sectionId}-${orientation}`);
         }
 
     }

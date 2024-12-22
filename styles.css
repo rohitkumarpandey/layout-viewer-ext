@@ -56,7 +56,6 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    letter-spacing: 2px;
     font-size: larger;
 }
 .lv-container>.lv-popup-header>.lv-popup-header-right {
