@@ -1,3 +1,60 @@
+class TabConfig {
+    constructor(tabId, deviceId, orientation) {
+        this.tabId = tabId;
+        this.deviceId = deviceId;
+        this.orientation = orientation;
+    }
+    getTabId() {
+        return this.tabId;
+    }
+    getDeviceId() {
+        return this.deviceId;
+    }
+    getOrientation() {
+        return this.orientation;
+    }
+    setOrientation(orientation) {
+        this.orientation = orientation;
+    }
+    setDeviceId(deviceId) {
+        this.deviceId = deviceId;
+    }
+    setTabId(tabId) {
+        this.tabId = tabId;
+    }
+}
+class TabConfigService {
+    constructor() {
+        this.tabConfigs = new Map();
+    }
+    addTabConfig(tabConfig) {
+        this.tabConfigs.set(`tabId-${tabConfig.getTabId()}`, tabConfig);
+        this.#addTabConfigsState(this.tabConfigs);
+    }
+    deleteTabConfig(tabId) {
+        this.tabConfigs.delete(`tabId-${tabId}`);
+        this.#addTabConfigsState(this.tabConfigs);
+    }
+    async getTabConfigs() {
+        this.tabConfigs = await this.#getTabConfigsState();
+        return this.tabConfigs;
+    }
+
+    #sendMessageToBackground(message, callback) {
+        chrome.runtime.sendMessage(message, {}, callback);
+    }
+
+    #addTabConfigsState(config) {
+        this.#sendMessageToBackground({ action: 'session_storage', perform: 'SET', data: { 'tabconfig': JSON.stringify(Array.from(config.entries())) } }, () => { });
+    }
+    async #getTabConfigsState() {
+        return await new Promise((resolve) => {
+            this.#sendMessageToBackground({ action: 'session_storage', perform: 'GET', data: { key: 'tabconfig' } }, (response) => {
+                resolve(new Map(JSON.parse(response['tabconfig'])));
+            });
+        });
+    }
+}
 class DeviceOption {
     constructor(id, name, height, width, enabled = true) {
         this.id = id;
@@ -19,13 +76,13 @@ class AppManager {
     constructor(deviceOptions, tabs = 1) {
         this.deviceOptions = deviceOptions;
         this.tabs = tabs
+        this.tabConfigService = new TabConfigService();
     }
 
     setDeviceOptions(sectionNum) {
         const pageHeadersElem = document.getElementsByClassName('lv-page-header');
         const pageHeaderLeft = document.createElement('div');
         pageHeaderLeft.className = 'lv-page-header-left';
-        // pageHeaderLeft.innerHTML = '&#128241;';
 
         const pageHeaderMiddle = document.createElement('div');
         pageHeaderMiddle.className = 'lv-page-header-middle';
@@ -101,47 +158,50 @@ class AppManager {
             const section = document.getElementById(`section-${sectionNum}`);
             if (section) {
                 section.parentNode.removeChild(section);
+                this.tabConfigService.deleteTabConfig(sectionNum);
             }
         });
     }
 
-    setSection() {
+    setSection(tabId) {
         const sectionsRef = document.getElementsByClassName('lv-sections');
 
         const sectionElem = document.createElement('div');
-        sectionElem.id = `section-${this.tabs}`;
+        sectionElem.id = `section-${tabId}`;
         sectionElem.className = 'lv-section';
-        sectionElem.setAttribute('data-app', `section-${this.tabs}-portrait`);
+        sectionElem.setAttribute('data-app', `section-${tabId}-portrait`);
 
         const sectionHeaderElem = document.createElement('div');
         sectionHeaderElem.className = 'lv-page-header';
 
         const sectionContentElem = document.createElement('div');
         sectionContentElem.className = 'lv-section-tab';
-        sectionContentElem.setAttribute('data-app', `tab-${this.tabs}`);
+        sectionContentElem.setAttribute('data-app', `tab-${tabId}`);
 
         const sectionContentIframeElem = document.createElement('iframe');
         sectionContentIframeElem.src = '/pages/page.html';
-        sectionContentIframeElem.id = `iframe-${this.tabs}`;
+        sectionContentIframeElem.id = `iframe-${tabId}`;
 
         sectionContentElem.appendChild(sectionContentIframeElem);
 
         sectionElem.appendChild(sectionHeaderElem);
         sectionElem.appendChild(sectionContentElem);
         [...sectionsRef].forEach(section => section.appendChild(sectionElem));
-        this.setDeviceOptions(this.tabs);
-
-
-
+        this.setDeviceOptions(tabId);
     }
 
     addTabs() {
-        this.tabs++;
-        this.setSection();
+        this.setSection(++this.tabs);
         this.setDefaultConfig();
     }
 
-    changeDevice(deviceId, sectionId, orientation = 'portrait') {
+    addTab(tabConfig) {
+        this.tabs = tabConfig.getTabId();
+        this.setSection(tabConfig.getTabId());
+        this.changeDevice(tabConfig.getDeviceId(), tabConfig.getTabId(), tabConfig.getOrientation(), false);
+    }
+
+    changeDevice(deviceId, sectionId, orientation = 'portrait', updateTabConfig = true) {
         const iframe = document.getElementById(`iframe-${sectionId}`);
         const device = this.deviceOptions.find(device => device.id === deviceId);
         if (device) {
@@ -160,8 +220,13 @@ class AppManager {
             // update the orientation
             const section = document.getElementById(`section-${sectionId}`);
             section.setAttribute('data-app', `section-${sectionId}-${orientation}`);
-        }
 
+            if (updateTabConfig) {
+                // update the tab config
+                const tabConfig = new TabConfig(sectionId, deviceId, orientation);
+                this.tabConfigService.addTabConfig(tabConfig);
+            }
+        }
     }
 
     setDefaultConfig() {
@@ -179,9 +244,20 @@ class AppManager {
         }
 
     }
+    async loadTabs() {
+        const tabConfigs = await this.tabConfigService.getTabConfigs();
+        if (tabConfigs.size > 0) {
+            tabConfigs.forEach(tabConfig => {
+                const config = new TabConfig(tabConfig.tabId, tabConfig.deviceId, tabConfig.orientation);
+                this.addTab(config);
+            });
+        } else {
+            this.setSection(this.tabs);
+            this.setDefaultConfig();
+        }
+    }
     init() {
-        this.setSection();
-        this.setDefaultConfig();
+        this.loadTabs();
         this.bindEvents();
 
     }
