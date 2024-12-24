@@ -63,6 +63,8 @@ class AppConfig {
             display: 'block',
             zIndex: '2000',
             'border-radius': '5px 0 0 5px',
+            boxShadow: '1px 1px 5px 0 lightslategrey',
+            backgroundColor: 'white',
         },
         popupOptions: {
             position: 'absolute',
