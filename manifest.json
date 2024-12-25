@@ -1,6 +1,14 @@
 {
     "manifest_version": 3,
     "name": "Layout Viewer",
+    "description": "An extension to view the layout of a webpage for different devices.",
+    "action": {
+        "default_icon": {
+            "16": "logo.png",
+            "48": "logo.png",
+            "128": "logo.png"
+        }
+    },
     "version": "1.0.0",
     "permissions": [
         "activeTab",
@@ -27,6 +35,7 @@
     "web_accessible_resources": [
         {
             "resources": [
+                "assets/logo-white.webp",
                 "popup.html",
                 "pages/page.html"
             ],

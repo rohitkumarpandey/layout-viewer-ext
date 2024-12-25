@@ -1,6 +1,6 @@
 :root {
     --background: #f5f1fe;
-    --first-color: #222831;
+    --first-color: #1D366F;
     --second-color: #393e46;
     --third-color: #f96d00;
     --forth-color: #f2f2f2;
@@ -63,6 +63,10 @@
     justify-content: center;
     align-items: center;
     font-size: larger;
+}
+.lv-popup-header-middle > img {
+    height: 24px;
+    margin-right: 5px;
 }
 
 .lv-container>.lv-popup-header>.lv-popup-header-right {

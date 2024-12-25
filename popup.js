@@ -214,12 +214,18 @@ class AppManager {
             // update resolution text
             const resolution = document.getElementById(`lv-page-resolution-${sectionId}`);
             resolution.innerText = `${config.width} x ${config.height}`;
-            iframe.style.height = config.height;
-            iframe.style.width = config.width;
+            iframe.style.maxHeight = config.height;
+            iframe.style.maxWidth = config.width;
+            iframe.style.minHeight = config.height;
+            iframe.style.minWidth = config.width;
 
             // update the orientation
             const section = document.getElementById(`section-${sectionId}`);
             section.setAttribute('data-app', `section-${sectionId}-${orientation}`);
+
+            // update the device dropdown
+            const deviceOptionsDropdown = document.getElementById(`section-dropdown-${sectionId}`);
+            deviceOptionsDropdown.value = deviceId;
 
             if (updateTabConfig) {
                 // update the tab config

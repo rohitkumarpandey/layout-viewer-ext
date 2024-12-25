@@ -33,7 +33,9 @@ class AppConfig {
             POPUP: 'popup'
         }
     };
-    const button = document.createElement("button");
+    const brandColor = '#1D366F';
+    const layout_viewer = document.createElement('layout-viewer');
+    const button = document.createElement("div");
     const closeBtn = document.createElement('div');
     const toggleBtn = document.createElement('div');
     const styleConfig = {
@@ -43,16 +45,24 @@ class AppConfig {
             right: 0,
             zIndex: '2000',
             padding: '10px',
-            backgroundColor: '#fff',
-            color: '#000',
             border: 'none',
             cursor: 'pointer',
-            "box-shadow": '2px 2px 5px grey',
-            width: '40px',
-            height: '200px',
+            // "box-shadow": `-1px 2px 6px 0 ${brandColor}`,
+            'max-width': '40px',
+            'height': '180px',
             'border-radius': '10px 0',
             'writing-mode': 'tb-rl',
-            transform: 'translate(0, -50%)'
+            transform: 'translate(0, -50%)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-evenly',
+            color: `${brandColor}`,
+            'font-weight': 'bolder',
+            'font-family': `"Montserrat", serif`,
+            'font-size': '16px',
+            'letter-spacing': '1px',
+            color: 'white',
+            backgroundColor: brandColor,
         },
         popup: {
             position: 'fixed',
@@ -98,9 +108,17 @@ class AppConfig {
 
     // inject floating button
     function injectingFloatingButton() {
-        button.innerText = 'Layout Viewer';
+        const logo = document.createElement('img');
+        logo.src = chrome.runtime.getURL('assets/logo-white.webp');
+        logo.style.width = '30px';
+        logo.style.height = '30px';
+        button.appendChild(logo);
+        const name = document.createElement('span');
+        name.innerText = 'Layout Viewer';
+        button.appendChild(name);
         Object.assign(button.style, styleConfig.button);
-        document.body.appendChild(button);
+        layout_viewer.appendChild(button);
+        document.body.appendChild(layout_viewer);
     }
 
     function closePopup() {
