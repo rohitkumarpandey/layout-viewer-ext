@@ -16,4 +16,10 @@ chrome.runtime.onMessage.addListener((request, sender, callback) => {
         }
         return true;
     }
+    if (request.action === 'getCurrentTabUrl') {
+        chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+            callback({ url: tabs[0].url });
+        });
+        return true;
+    }
 })

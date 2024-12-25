@@ -1,7 +1,14 @@
 class AppConfig {
-    constructor(fullscreen = false, pinned = true) {
+    constructor(activeTabUrl = null, fullscreen = false, pinned = true) {
+        this.activeTabUrl = activeTabUrl;
         this.fullscreen = fullscreen;
         this.pinned = pinned;
+    }
+    getActiveTabUrl() {
+        return this.activeTabUrl;
+    }
+    setActiveTabUrl(activeTabUrl) {
+        this.activeTabUrl = activeTabUrl;
     }
     getFullscreen() {
         return this.fullscreen;
@@ -153,7 +160,13 @@ class AppConfig {
 
         document.body.appendChild(popup);
         appConfig.setPinned(true);
-        saveState(appConfig);
+
+        // update current tab url
+        (async () => {
+            const url = await getCurrentTabUrl();
+            appConfig.setActiveTabUrl(url);
+            saveState(appConfig);
+        })();
     }
     function bindEvent(target, event, callback) {
         target.addEventListener(event, callback);
@@ -202,6 +215,7 @@ class AppConfig {
             const popup = document.getElementById('custom-popup');
             if (popup) {
                 popup.remove();
+                appConfig.setActiveTabUrl(null);
                 appConfig.setFullscreen(false);
                 appConfig.setPinned(false);
                 saveState(appConfig);
@@ -223,21 +237,36 @@ class AppConfig {
             });
         });
     }
+    async function getCurrentTabUrl() {
+        return new Promise((resolve, reject) => {
+            sendMessageToBackground({ action: 'getCurrentTabUrl' }, (response) => {
+                if (chrome.runtime.lastError) {
+                    reject('');
+                } else {
+                    resolve(new URL(response.url).origin);
+                }
+            });
+        });
+    }
     function handleReload() {
         const navigationEntries = performance.getEntriesByType('navigation');
         if (navigationEntries.length > 0 && navigationEntries[0].type === 'reload') {
             (async () => {
+                const url = await getCurrentTabUrl();
                 const config = (await getState())['appconfig'] || appConfig;
-                appConfig.setFullscreen(config.fullscreen);
-                appConfig.setPinned(config.pinned);
+                if (config.activeTabUrl === url) {
+                    appConfig.setActiveTabUrl(url);
+                    appConfig.setFullscreen(config.fullscreen);
+                    appConfig.setPinned(config.pinned);
 
-                // open popup if pinned
-                if (appConfig.pinned) {
-                    injectPopup();
-                }
-                // open in fullscreen
-                if (appConfig.fullscreen) {
-                    stretchToFullScreen();
+                    // open popup if pinned
+                    if (appConfig.pinned) {
+                        injectPopup();
+                    }
+                    // open in fullscreen
+                    if (appConfig.fullscreen) {
+                        stretchToFullScreen();
+                    }
                 }
             })();
         }
@@ -246,3 +275,11 @@ class AppConfig {
     bindEvents();
     handleReload();
 })();
+
+document.addEventListener('DOMContentLoaded', () => {
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+        const activeTab = tabs[0];
+        console.log(activeTab.url);
+
+    })
+})
