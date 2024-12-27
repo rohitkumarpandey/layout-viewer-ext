@@ -273,7 +273,27 @@ document.addEventListener('DOMContentLoaded', () => {
     const iPhoneSE = new DeviceOption('iphone-se', 'iPhone SE', 667, 375);
     const iPhoneXR = new DeviceOption('iphone-xr', 'iPhone XR', 896, 414);
     const iPhone12Pro = new DeviceOption('iphone-12-pro', 'iPhone 12 Pro', 884, 390);
+
+    const iPhone13Mini = new DeviceOption('iphone-13-mini', 'iPhone 13 Mini', 812, 375);
+    const iPhone13 = new DeviceOption('iphone-13', 'iPhone 13', 844, 390);
+    const iPhone13Pro = new DeviceOption('iphone-13-pro', 'iPhone 13 Pro', 844, 390);
+    const iPhone13ProMax = new DeviceOption('iphone-13-pro-max', 'iPhone 13 Pro Max', 926, 428);
+
+    const iPhone14 = new DeviceOption('iphone-14', 'iPhone 14', 844, 390);
+    const iPhone14Pro = new DeviceOption('iphone-14-pro', 'iPhone 14 Pro', 852, 393);
     const iPhone14MaxPro = new DeviceOption('iphone-14-pro-max', 'iPhone 14 Pro Max', 932, 430);
+
+    const iPhone15 = new DeviceOption('iphone-15', 'iPhone 15', 852, 393);
+    const iPhone15Pro = new DeviceOption('iphone-15-pro', 'iPhone 15 Pro', 852, 393);
+    const iPhone15Plus = new DeviceOption('iphone-15-plus', 'iPhone 15 Plus', 932, 430);
+    const iPhone15ProMax = new DeviceOption('iphone-15-pro-max', 'iPhone 15 Pro Max', 932, 430);
+
+    const iPhone16 = new DeviceOption('iphone-16', 'iPhone 16', 844, 390);
+    const iPhone16Mini = new DeviceOption('iphone-16-mini', 'iPhone 16 Mini', 812, 375);
+    const iPhone16Pro = new DeviceOption('iphone-16-pro', 'iPhone 16 Pro', 844, 390);
+    const iPhone16ProMax = new DeviceOption('iphone-16-pro-max', 'iPhone 16 Pro Max', 926, 428);
+    const iPhone16Max = new DeviceOption('iphone-16-max', 'iPhone 16 Max', 926, 428);
+
     const pixel7 = new DeviceOption('pixel-7', 'Pixel 7', 915, 412);
     const samsungGalaxyS8Plus = new DeviceOption('samsung-galaxy-s8-plus', 'Samsung Galaxy S8+', 740, 360);
     const samsungGalaxyS20Ultra = new DeviceOption('samsung-galaxy-s20-ultra', 'Samsung Galaxy S20 Ultra', 915, 412);
@@ -291,7 +311,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     const devices = [iPhoneSE, iPhoneXR, iPhone12Pro,
-        iPhone14MaxPro, pixel7, samsungGalaxyS8Plus,
+        iPhone13Mini, iPhone13, iPhone13Pro, iPhone13ProMax,
+        iPhone14, iPhone14Pro, iPhone14MaxPro,
+        iPhone15, iPhone15Pro, iPhone15Plus, iPhone15ProMax,
+        pixel7, samsungGalaxyS8Plus,
         samsungGalaxyS20Ultra, iPadMini, iPadAir, iPadPro,
         surfacePro7, surfaceDuo, galaxyZFold5, asusZenbookFold,
         samsungGalaxyA51A71, nestHub, nestHubMax];

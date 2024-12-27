@@ -64,7 +64,13 @@
     align-items: center;
     font-size: larger;
 }
-.lv-popup-header-middle > img {
+.lv-container> .lv-popup-header>.lv-popup-header-middle > a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+}
+.lv-popup-header-middle > a > img {
     height: 24px;
     margin-right: 5px;
 }
