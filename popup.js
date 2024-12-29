@@ -288,11 +288,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const iPhone15Plus = new DeviceOption('iphone-15-plus', 'iPhone 15 Plus', 932, 430);
     const iPhone15ProMax = new DeviceOption('iphone-15-pro-max', 'iPhone 15 Pro Max', 932, 430);
 
-    const iPhone16 = new DeviceOption('iphone-16', 'iPhone 16', 844, 390);
-    const iPhone16Mini = new DeviceOption('iphone-16-mini', 'iPhone 16 Mini', 812, 375);
-    const iPhone16Pro = new DeviceOption('iphone-16-pro', 'iPhone 16 Pro', 844, 390);
-    const iPhone16ProMax = new DeviceOption('iphone-16-pro-max', 'iPhone 16 Pro Max', 926, 428);
-    const iPhone16Max = new DeviceOption('iphone-16-max', 'iPhone 16 Max', 926, 428);
+    const iPhone16 = new DeviceOption('iphone-16', 'iPhone 16', 852, 393);
+    const iPhone16ProMax = new DeviceOption('iphone-16-pro-max', 'iPhone 16 Pro Max', 956, 440);
 
     const pixel7 = new DeviceOption('pixel-7', 'Pixel 7', 915, 412);
     const samsungGalaxyS8Plus = new DeviceOption('samsung-galaxy-s8-plus', 'Samsung Galaxy S8+', 740, 360);
@@ -314,6 +311,7 @@ document.addEventListener('DOMContentLoaded', () => {
         iPhone13Mini, iPhone13, iPhone13Pro, iPhone13ProMax,
         iPhone14, iPhone14Pro, iPhone14MaxPro,
         iPhone15, iPhone15Pro, iPhone15Plus, iPhone15ProMax,
+        iPhone16, iPhone16ProMax,
         pixel7, samsungGalaxyS8Plus,
         samsungGalaxyS20Ultra, iPadMini, iPadAir, iPadPro,
         surfacePro7, surfaceDuo, galaxyZFold5, asusZenbookFold,

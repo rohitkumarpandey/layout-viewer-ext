@@ -23,8 +23,18 @@ class AppConfig {
         this.pinned = pinned;
     }
 }
+// Function to dynamically load a font from a CDN
+function loadFont(fontUrl) {
+    const fontLink = document.createElement('link');
+    fontLink.rel = 'stylesheet';
+    fontLink.href = fontUrl;
+    document.head.appendChild(fontLink);
+}
 (() => {
+    const font = 'https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap';
+    loadFont(font);
     const appConfig = new AppConfig();
+    const brandName = 'Layout Viewer';
 
     const CONSTANT = {
         POPUP_ID: 'custom-popup',
@@ -33,11 +43,6 @@ class AppConfig {
         },
         SESSION_STORAGE: {
             POPUP_PINNED: 'popup_pinned',
-        },
-        SENDER: {
-            BACKGROUND: 'background',
-            CONTENT: 'content',
-            POPUP: 'popup'
         }
     };
     const brandColor = '#1D366F';
@@ -51,13 +56,11 @@ class AppConfig {
             top: '50%',
             right: 0,
             zIndex: '2000',
-            padding: '10px',
+            padding: '4px',
             border: 'none',
             cursor: 'pointer',
-            // "box-shadow": `-1px 2px 6px 0 ${brandColor}`,
-            'max-width': '40px',
-            'height': '180px',
-            'border-radius': '10px 0',
+            'height': '150px',
+            'border-radius': '5px 0 5px 0',
             'writing-mode': 'tb-rl',
             transform: 'translate(0, -50%)',
             display: 'flex',
@@ -66,10 +69,10 @@ class AppConfig {
             color: `${brandColor}`,
             'font-weight': 'bolder',
             'font-family': `"Montserrat", serif`,
-            'font-size': '16px',
+            'font-size': '12px',
             'letter-spacing': '1px',
-            color: 'white',
-            backgroundColor: brandColor,
+            backgroundColor: 'white',
+            boxShadow: `1px 1px 5px 0 ${brandColor}`,
         },
         popup: {
             position: 'fixed',
@@ -116,12 +119,12 @@ class AppConfig {
     // inject floating button
     function injectingFloatingButton() {
         const logo = document.createElement('img');
-        logo.src = chrome.runtime.getURL('assets/logo-white.webp');
-        logo.style.width = '30px';
-        logo.style.height = '30px';
+        logo.src = chrome.runtime.getURL('assets/logo.webp');
+        logo.style.width = '24px';
+        logo.style.height = '24px';
         button.appendChild(logo);
         const name = document.createElement('span');
-        name.innerText = 'Layout Viewer';
+        name.innerText = `${brandName}`;
         button.appendChild(name);
         Object.assign(button.style, styleConfig.button);
         layout_viewer.appendChild(button);

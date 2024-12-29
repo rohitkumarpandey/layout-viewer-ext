@@ -70,6 +70,9 @@
     justify-content: center;
     text-decoration: none;
 }
+.lv-container> .lv-popup-header>.lv-popup-header-middle > a:visited {
+    color: var(--first-color);
+}
 .lv-popup-header-middle > a > img {
     height: 24px;
     margin-right: 5px;

@@ -11,7 +11,6 @@
     },
     "version": "1.0.0",
     "permissions": [
-        "activeTab",
         "tabs",
         "storage"
     ],
@@ -35,7 +34,7 @@
     "web_accessible_resources": [
         {
             "resources": [
-                "assets/logo-white.webp",
+                "assets/logo.webp",
                 "popup.html",
                 "pages/page.html"
             ],
