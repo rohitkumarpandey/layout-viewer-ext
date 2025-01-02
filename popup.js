@@ -50,7 +50,11 @@ class TabConfigService {
     async #getTabConfigsState() {
         return await new Promise((resolve) => {
             this.#sendMessageToBackground({ action: 'session_storage', perform: 'GET', data: { key: 'tabconfig' } }, (response) => {
-                resolve(new Map(JSON.parse(response['tabconfig'])));
+                if (!response['tabconfig']) {
+                    resolve(new Map());
+                } else {
+                    resolve(new Map(JSON.parse(response['tabconfig'])));
+                }
             });
         });
     }
