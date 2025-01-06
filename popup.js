@@ -35,6 +35,10 @@ class TabConfigService {
         this.tabConfigs.delete(`tabId-${tabId}`);
         this.#addTabConfigsState(this.tabConfigs);
     }
+    deleteTabConfigs() {
+        this.tabConfigs = new Map();
+        this.#addTabConfigsState(this.tabConfigs);
+    }
     async getTabConfigs() {
         this.tabConfigs = await this.#getTabConfigsState();
         return this.tabConfigs;
@@ -137,7 +141,7 @@ class AppManager {
 
         rotateIcon.addEventListener('click', () => {
             const data = ("" + rotateIcon.getAttribute('data-app'));
-            const sectionNum = data[data.length - 1];
+            const sectionNum = data.split("-").slice(-1)[0];
             const section = document.getElementById(`section-${sectionNum}`);
             const sectionData = "" + section.getAttribute('data-app');
             const orientation = sectionData.split('-')[2] || 'portrait';
@@ -151,13 +155,13 @@ class AppManager {
         });
         deviceOptionsDropdown.addEventListener('change', () => {
             const data = ("" + deviceOptionsDropdown.getAttribute('data-app'));
-            const sectionNum = data[data.length - 1];
+            const sectionNum = data.split("-").slice(-1)[0];
             this.changeDevice(deviceOptionsDropdown.value, sectionNum);
         });
 
         closeTabBtn.addEventListener('click', () => {
             const data = ("" + closeTabBtn.getAttribute('data-app'));
-            const sectionNum = data[data.length - 1];
+            const sectionNum = data.split("-").slice(-1)[0];
 
             const section = document.getElementById(`section-${sectionNum}`);
             if (section) {
@@ -243,6 +247,17 @@ class AppManager {
         const defaultDevice = this.deviceOptions[0];
         this.changeDevice(defaultDevice.id, this.tabs);
     }
+    
+    classAllTabs() {
+        const sections = document.getElementsByClassName('lv-section');
+        if (sections) {
+            [...sections].forEach(section => {
+                section.parentNode.removeChild(section);
+            });
+            // reset configs
+            this.tabConfigService.deleteTabConfigs();
+        }
+    }
 
     bindEvents() {
         // add tab btn
@@ -250,6 +265,13 @@ class AppManager {
         if (addTabBtn) {
             addTabBtn.addEventListener('click', () => {
                 this.addTabs();
+            })
+        }
+        // close all tab btn
+        const closeAllTabBtn = document.getElementById('close-all-tab-btn');
+        if (closeAllTabBtn) {
+            closeAllTabBtn.addEventListener('click', () => {
+                this.classAllTabs();
             })
         }
 

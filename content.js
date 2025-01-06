@@ -1,8 +1,15 @@
 class AppConfig {
-    constructor(activeTabUrl = null, fullscreen = false, pinned = true) {
+    constructor(showFloatingBtn = true, activeTabUrl = null, fullscreen = false, pinned = true) {
+        this.showFloatingBtn = showFloatingBtn;
         this.activeTabUrl = activeTabUrl;
         this.fullscreen = fullscreen;
         this.pinned = pinned;
+    }
+    getShowFloatingBtn() {
+        return this.showFloatingBtn;
+    }
+    setShowFloatingBtn(showFloatingBtn) {
+        this.showFloatingBtn = showFloatingBtn;
     }
     getActiveTabUrl() {
         return this.activeTabUrl;
@@ -35,7 +42,9 @@ function loadFont(fontUrl) {
     loadFont(font);
     const appConfig = new AppConfig();
     const brandName = 'Layout Viewer';
-
+    const showPopupBtn = document.createElement('div');
+    const hideFLoatingBtn = document.createElement('div');
+    const extensionTagName = 'layout-viewer-extension';
     const CONSTANT = {
         POPUP_ID: 'custom-popup',
         ACTION: {
@@ -46,7 +55,7 @@ function loadFont(fontUrl) {
         }
     };
     const brandColor = '#1D366F';
-    const layout_viewer = document.createElement('layout-viewer');
+    const layout_viewer = document.createElement(extensionTagName);
     const button = document.createElement("div");
     const closeBtn = document.createElement('div');
     const toggleBtn = document.createElement('div');
@@ -81,10 +90,11 @@ function loadFont(fontUrl) {
             'width': '60%',
             height: '92%',
             display: 'block',
-            zIndex: '2000',
+            zIndex: '20000',
             'border-radius': '5px 0 0 5px',
             boxShadow: '1px 1px 5px 0 lightslategrey',
             backgroundColor: 'white',
+            'font-family': `"Montserrat", serif`,
         },
         popupOptions: {
             position: 'absolute',
@@ -95,16 +105,19 @@ function loadFont(fontUrl) {
             justifyContent: 'space-around',
             fontSize: '24px',
             color: 'black',
-            fontWeight: 'normal'
+            fontWeight: 'normal',
+            'font-family': `"Montserrat", serif`,
         },
         popupClose: {
             cursor: 'pointer',
             margin: '0 4px',
+            'font-family': `"Montserrat", serif`,
         },
         toggleBtn: {
             cursor: 'pointer',
             color: 'black',
             margin: '0 4px',
+            'font-family': `"Montserrat", serif`,
         },
 
         iframe: {
@@ -112,23 +125,96 @@ function loadFont(fontUrl) {
             height: '100%',
             border: 'none',
             'border-radius': '5px 0 0 5px',
+        },
+        hoveringOpts: {
+            position: 'absolute',
+            top: '0',
+            backgroundColor: 'white',
+            height: '100%',
+            width: '100%',
+            display: 'flex',
+            alignItems: 'center',
+            'border-radius': '5px 0 5px 0'
+        },
+        hovering_hide: {
+            display: 'none'
+        },
+        hovering_show: {
+            display: 'flex'
+        },
+        popupShow: {
+            display: 'flex',
+            width: '95%',
+            alignItems: 'center',
+            flexBasis: '80%',
+            justifyContent: 'center',
+            borderBottom: '0.5px solid lightslategrey',
+        },
+
+        floatBtnHide: {
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: '95%',
+            flexBasis: '20%',
+            fontSize: '16px',
+            color: 'red',
+            backgroundColor: '#f5f1fe'
         }
     };
+    function hoveringOptions() {
+        const hoveringOptions = document.createElement('div');
+        hoveringOptions.id = 'layout_viewer_btn_hover'
 
+        showPopupBtn.id = "popup_show_btn";
+        Object.assign(showPopupBtn.style, styleConfig.popupShow);
+        showPopupBtn.innerText = 'View Layout';
+        hoveringOptions.appendChild(showPopupBtn);
 
+        hideFLoatingBtn.id = "popup_close_btn";
+        hideFLoatingBtn.innerText = 'X';
+        Object.assign(hideFLoatingBtn.style, styleConfig.floatBtnHide);
+
+        hoveringOptions.appendChild(hideFLoatingBtn);
+        Object.assign(hoveringOptions.style, styleConfig.hoveringOpts);
+        Object.assign(hoveringOptions.style, styleConfig.hovering_hide);
+        return hoveringOptions;
+    }
+    function extensionTagElem() {
+        return document.getElementsByTagName(extensionTagName);
+    }
     // inject floating button
     function injectingFloatingButton() {
-        const logo = document.createElement('img');
-        logo.src = chrome.runtime.getURL('assets/logo.webp');
-        logo.style.width = '24px';
-        logo.style.height = '24px';
-        button.appendChild(logo);
-        const name = document.createElement('span');
-        name.innerText = `${brandName}`;
-        button.appendChild(name);
-        Object.assign(button.style, styleConfig.button);
-        layout_viewer.appendChild(button);
-        document.body.appendChild(layout_viewer);
+        const extensionTag = [...extensionTagElem()];
+        if (!extensionTag.length) {
+            const logo = document.createElement('img');
+            logo.src = chrome.runtime.getURL('assets/logo.webp');
+            logo.style.width = '24px';
+            logo.style.height = '24px';
+            button.id = 'layout_viewer_floating_button';
+            button.appendChild(logo);
+            const name = document.createElement('span');
+            name.innerText = `${brandName}`;
+            button.appendChild(name);
+            Object.assign(button.style, styleConfig.button);
+            button.appendChild(hoveringOptions());
+            layout_viewer.appendChild(button);
+            document.body.appendChild(layout_viewer);
+            appConfig.setShowFloatingBtn(true);
+            saveState(appConfig);
+        }
+    }
+
+    function removeFlotingButton() {
+        const layoutViewer = document.getElementsByTagName(extensionTagName);
+        if (layoutViewer) {
+            [...layoutViewer].forEach(lv => {
+                lv.parentNode.removeChild(lv);
+            });
+
+            appConfig.setShowFloatingBtn(false);
+            saveState(appConfig);
+        }
     }
 
     function closePopup() {
@@ -152,24 +238,28 @@ function loadFont(fontUrl) {
         return options;
     }
     function injectPopup() {
-        const popup = document.createElement('div');
-        popup.id = 'custom-popup';
-        Object.assign(popup.style, styleConfig.popup);
-        popup.appendChild(popupOptions());
-        const iframe = document.createElement('iframe');
-        iframe.src = chrome.runtime.getURL('popup.html');
-        Object.assign(iframe.style, styleConfig.iframe);
-        popup.appendChild(iframe);
+        const popupElem = document.getElementById('custom-popup');
+        const extensionTag = [...extensionTagElem()];
+        if (!(extensionTag.length && popupElem)) {
+            const popup = document.createElement('div');
+            popup.id = 'custom-popup';
+            Object.assign(popup.style, styleConfig.popup);
+            popup.appendChild(popupOptions());
+            const iframe = document.createElement('iframe');
+            iframe.src = chrome.runtime.getURL('popup.html');
+            Object.assign(iframe.style, styleConfig.iframe);
+            popup.appendChild(iframe);
+            const layout_viewer = document.getElementsByTagName(extensionTagName);
+            layout_viewer[0].appendChild(popup);
+            appConfig.setPinned(true);
 
-        document.body.appendChild(popup);
-        appConfig.setPinned(true);
-
-        // update current tab url
-        (async () => {
-            const url = await getCurrentTabUrl();
-            appConfig.setActiveTabUrl(url);
-            saveState(appConfig);
-        })();
+            // update current tab url
+            (async () => {
+                const url = await getCurrentTabUrl();
+                appConfig.setActiveTabUrl(url);
+                saveState(appConfig);
+            })();
+        }
     }
     function bindEvent(target, event, callback) {
         target.addEventListener(event, callback);
@@ -203,19 +293,27 @@ function loadFont(fontUrl) {
     }
 
     function bindEvents() {
-        bindEvent(button, 'click', () => {
-            const popup = document.getElementById('custom-popup');
+        const popup = document.getElementById('custom-popup');
+        const a = document.getElementById('layout_viewer_btn_hover');
+        bindEvent(showPopupBtn, 'click', () => {
             if (!popup) {
                 injectPopup();
             }
         });
-
+        bindEvent(hideFLoatingBtn, 'click', () => {
+            removeFlotingButton();
+        });
+        bindEvent(button, 'mouseenter', () => {
+            Object.assign(a.style, styleConfig.hovering_show);
+        });
+        bindEvent(button, 'mouseleave', () => {
+            Object.assign(a.style, styleConfig.hovering_hide);
+        });
         bindEvent(toggleBtn, 'click', () => {
             toggleFullScreen();
         });
 
         bindEvent(closeBtn, 'click', () => {
-            const popup = document.getElementById('custom-popup');
             if (popup) {
                 popup.remove();
                 appConfig.setActiveTabUrl(null);
@@ -251,12 +349,16 @@ function loadFont(fontUrl) {
             });
         });
     }
-    function handleReload() {
-        const navigationEntries = performance.getEntriesByType('navigation');
-        if (navigationEntries.length > 0 && navigationEntries[0].type === 'reload') {
-            (async () => {
-                const url = await getCurrentTabUrl();
-                const config = (await getState())['appconfig'] || appConfig;
+    function loadData() {
+        (async () => {
+            const url = await getCurrentTabUrl();
+            const config = (await getState())['appconfig'] || appConfig;
+            appConfig.setShowFloatingBtn(config.showFloatingBtn);
+            if (appConfig.getShowFloatingBtn()) {
+                injectingFloatingButton();
+            }
+            const navigationEntries = performance.getEntriesByType('navigation');
+            if (navigationEntries.length > 0 && navigationEntries[0].type === 'reload') {
                 if (config.activeTabUrl === url) {
                     appConfig.setActiveTabUrl(url);
                     appConfig.setFullscreen(config.fullscreen);
@@ -271,18 +373,19 @@ function loadFont(fontUrl) {
                         stretchToFullScreen();
                     }
                 }
-            })();
-        }
+            }
+        })();
+
     }
-    injectingFloatingButton();
+    loadData();
     bindEvents();
-    handleReload();
+    // Listen for messages from the background script
+    chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+        if (request.action === 'extensionIconClicked') {
+            injectingFloatingButton();
+            injectPopup();
+            sendResponse({ status: 'success' });
+        }
+    });
 })();
 
-document.addEventListener('DOMContentLoaded', () => {
-    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-        const activeTab = tabs[0];
-        console.log(activeTab.url);
-
-    })
-})

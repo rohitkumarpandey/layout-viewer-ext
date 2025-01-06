@@ -1,9 +1,13 @@
 importScripts('storage.js');
-chrome.runtime.onMessage.addListener((request, sender, callback) => {
-    if (request.action === 'open_popup') {
-        chrome.action.openPopup();
-    }
+chrome.action.onClicked.addListener((tab) => {
+    chrome.tabs.sendMessage(tab.id, { action: 'extensionIconClicked' }, (_) => {
+        if (chrome.runtime.lastError) {
+            console.error('Error sending message to content script:', chrome.runtime.lastError);
+        }
+    });
+});
 
+chrome.runtime.onMessage.addListener((request, _, callback) => {
     if (request.action === 'session_storage') {
         if (request.perform && request.perform == 'GET') {
             get(request.data.key, (result) => {
