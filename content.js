@@ -293,9 +293,8 @@ function loadFont(fontUrl) {
     }
 
     function bindEvents() {
-        const popup = document.getElementById('custom-popup');
-        const a = document.getElementById('layout_viewer_btn_hover');
         bindEvent(showPopupBtn, 'click', () => {
+            const popup = document.getElementById('custom-popup');
             if (!popup) {
                 injectPopup();
             }
@@ -304,9 +303,11 @@ function loadFont(fontUrl) {
             removeFlotingButton();
         });
         bindEvent(button, 'mouseenter', () => {
+            const a = document.getElementById('layout_viewer_btn_hover');
             Object.assign(a.style, styleConfig.hovering_show);
         });
         bindEvent(button, 'mouseleave', () => {
+            const a = document.getElementById('layout_viewer_btn_hover');
             Object.assign(a.style, styleConfig.hovering_hide);
         });
         bindEvent(toggleBtn, 'click', () => {
@@ -314,6 +315,7 @@ function loadFont(fontUrl) {
         });
 
         bindEvent(closeBtn, 'click', () => {
+            const popup = document.getElementById('custom-popup');
             if (popup) {
                 popup.remove();
                 appConfig.setActiveTabUrl(null);
