@@ -1,0 +1,22 @@
+.lv-page-container {
+    height: 100%;
+    width: 100%;
+}
+
+.lv-page-container > .lv-page-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 5%;
+}
+
+.lv-page-container > .lv-page-content {
+    height: 95%;
+}
+
+.lv-page-container > .lv-page-content > iframe {
+    height: 100%;
+    width: 100%;
+    border: none;
+    box-shadow: 2px 2px 5px lightslategray;
+}
